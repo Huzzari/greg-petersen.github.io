@@ -1,4 +1,1 @@
-requirejs([
-  "js/invaders",
-  "js/projectiles"
-]);
+requirejs(["js/invaders", "js/controls"])

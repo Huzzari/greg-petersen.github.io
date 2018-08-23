@@ -1,4 +1,14 @@
+body {
+    display: flex;
+}
+
 #canvas {
     background-color: lightgrey;
-    position: relative;
+		position: relative;
+		height: 750px;
+		width: 600px;
+}
+
+span, h3 {
+    display: inline-block;
 }
