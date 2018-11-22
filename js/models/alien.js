@@ -10,13 +10,17 @@ define(["../constants", "./moveableObject"], (_constants, MoveableObject) => {
 			this.moveRight = () => {
 				this.lastPosition = { x: this.position.x, y: this.position.y }
 				this.directionMoving = DIRECTION.RIGHT
-				this.position.x += 4
+				this.position.x += 10
 			}
 
 			this.moveLeft = () => {
 				this.lastPosition = { x: this.position.x, y: this.position.y }
 				this.directionMoving = DIRECTION.LEFT
-				this.position.x -= 4
+				this.position.x -= 10
+			}
+
+			this.moveDown = () => {
+				this.position.y += 60
 			}
 
 			this.canMoveRight = () => {

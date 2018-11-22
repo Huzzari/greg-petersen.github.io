@@ -50,11 +50,11 @@ define(["./canvas", "./constants", "./projectiles", "./sounds", "./models/projec
 	}
 
 	const canMoveRight = () => {
-		return player.position.x + player.size.width < CANVAS_WIDTH
+		return player.position.x + player.size.width < CANVAS_WIDTH - 50
 	}
 
 	const canMoveLeft = () => {
-		return player.position.x > 0
+		return player.position.x > 50
 	}
 
 	const shoot = () => {

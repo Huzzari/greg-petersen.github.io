@@ -21,7 +21,7 @@ define(["./player", "./aliens", "./projectiles"], (
 		projectiles.forEach((projectile, projectileIndex) => {
 			aliens.forEach((alienStack, stackIndex) =>
 				alienStack.forEach((alien, alienIndex) => {
-					if (isCollision(projectile, alien)) {
+					if (isCollision(projectile, alien) && projectile.isPlayers) {
 						destroyAlien(alien, stackIndex, alienIndex)
 						destroyProjectile(projectile, projectileIndex)
 					}

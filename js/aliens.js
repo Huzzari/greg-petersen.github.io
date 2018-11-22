@@ -9,8 +9,8 @@ define(["./canvas", "./projectiles", "./constants", "./sounds", "./models/alien"
 	const { clearObject, drawObject, clearLastObjectPosition } = _canvas
 	const { projectiles } = _projectiles
 	const { DIRECTION } = _constants
-	const { alien_death, one, two, three, four } = _sounds
-	const sounds = [one, two, three, four]
+	const { alien_death } = _sounds
+
 	const aliens = []
 
 	const alienInfo = {
@@ -19,7 +19,7 @@ define(["./canvas", "./projectiles", "./constants", "./sounds", "./models/alien"
 
 	let shootTimeCounter = 0
 	let moveTimeCounter = 0
-	let soundIndex = 0
+
 	let aliensHaveMoved = false
 
 	const generateAliens = () => {
@@ -77,8 +77,7 @@ define(["./canvas", "./projectiles", "./constants", "./sounds", "./models/alien"
 	}
 
 	const moveAliens = () => {
-		// if (moveTimeCounter >= alienInfo.alienCount * 2) {
-		if (moveTimeCounter >= 40) {
+		if (moveTimeCounter >= alienInfo.alienCount * 1) {
 			moveTimeCounter = 0
 
 			switch (aliens[0][0].directionMoving) {
@@ -90,24 +89,18 @@ define(["./canvas", "./projectiles", "./constants", "./sounds", "./models/alien"
 					break
 			}
 
-			if (soundIndex >= sounds.length) {
-				soundIndex = 0
-			}
-
 			aliensHaveMoved = true
-			sounds[soundIndex].play()
-			soundIndex++
 		} else {
 			moveTimeCounter++
 		}
 	}
 
 	const handleDirectionLeft = () => {
-		aliens[0][0].canMoveLeft() ? moveAliensLeft() : moveAliensRight()
+		aliens[0][0].canMoveLeft() ? moveAliensLeft() : moveAliensDownThenRight()
 	}
 
 	const handleDirectionRight = () => {
-		aliens[aliens.length - 1][0].canMoveRight() ? moveAliensRight() : moveAliensLeft()
+		aliens[aliens.length - 1][0].canMoveRight() ? moveAliensRight() : moveAliensDownThenLeft()
 	}
 
 	const moveAliensRight = () => {
@@ -116,6 +109,20 @@ define(["./canvas", "./projectiles", "./constants", "./sounds", "./models/alien"
 
 	const moveAliensLeft = () => {
 		aliens.forEach(alienSet => alienSet.forEach(alien => alien.moveLeft()))
+	}
+
+	const moveAliensDownThenRight = () => {
+		aliens.forEach(alienSet => alienSet.forEach(alien => {
+			alien.moveRight()
+			alien.moveDown()
+		}))
+	}
+
+	const moveAliensDownThenLeft = () => {
+		aliens.forEach(alienSet => alienSet.forEach(alien => {
+			alien.moveLeft()
+			alien.moveDown()
+		}))
 	}
 
 	generateAliens()

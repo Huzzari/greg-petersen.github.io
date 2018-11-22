@@ -21,11 +21,11 @@ define(["../constants", "./moveableObject"], (_constants, MoveableObject) => {
 
 			this.move = () => {
 				if (this.direction === DIRECTION.DOWN) {
-					this.position.y += 5
+					this.position.y += 8
 				}
 
 				if (this.direction === DIRECTION.UP) {
-					this.position.y -= 5
+					this.position.y -= 8
 				}
 			}
 		}

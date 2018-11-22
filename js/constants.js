@@ -21,7 +21,7 @@ define(["./canvas"], _canvas => {
 		},
 		CANVAS_HEIGHT: canvasElement.height / 2,
 		CANVAS_WIDTH: canvasElement.width / 2,
-		PROJECTILE_HEIGHT: 20,
-		PROJECTILE_WIDTH: 10
+		PROJECTILE_HEIGHT: 10,
+		PROJECTILE_WIDTH: 5
 	}
 })
