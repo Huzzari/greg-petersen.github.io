@@ -22,11 +22,7 @@ define([
 		playMusic()
 		drawPlayerArea()
 		drawPlayer()
-
-		// if (totalElapsedFrames % 2 == 0) {
 		drawProjectiles()
-		// }
-
 		moveAliens()
 		drawAliens()
 		alienFireProjectile()

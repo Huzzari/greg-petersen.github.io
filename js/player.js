@@ -25,7 +25,7 @@ define(["./canvas", "./constants", "./projectiles", "./sounds", "./models/projec
 			y: 700
 		},
 		color: "lightgreen",
-		visible: true
+		visible: false
 	}
 
 	// TODO: Refactor Player into class
@@ -52,7 +52,9 @@ define(["./canvas", "./constants", "./projectiles", "./sounds", "./models/projec
 	}
 
 	const drawPlayerArea = () => {
-		drawObject(playerArea)
+		if (playerArea.visible) {
+			drawObject(playerArea)
+		}
 	}
 
 	const drawPlayer = () => {
