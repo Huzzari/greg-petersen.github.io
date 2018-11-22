@@ -3,7 +3,7 @@ define(["./player", "./aliens", "./projectiles"], (
 	_aliens,
 	_projectiles
 ) => {
-	const { player, destroyPlayer } = _player
+	const { player, destroyPlayer, playerArea } = _player
 	const { aliens, destroyAlien } = _aliens
 	const { projectiles, destroyProjectile } = _projectiles
 
@@ -18,20 +18,25 @@ define(["./player", "./aliens", "./projectiles"], (
 	}
 
 	const checkCollisions = () => {
-		projectiles.forEach((projectile, projectileIndex) => {
-			aliens.forEach((alienStack, stackIndex) =>
-				alienStack.forEach((alien, alienIndex) => {
+		aliens.forEach((alienStack, stackIndex) =>
+			alienStack.forEach((alien, alienIndex) => {
+				projectiles.forEach((projectile, projectileIndex) => {
+					if (isCollision(projectile, player)) {
+						destroyPlayer()
+					}
+
 					if (isCollision(projectile, alien) && projectile.isPlayers) {
 						destroyAlien(alien, stackIndex, alienIndex)
 						destroyProjectile(projectile, projectileIndex)
 					}
 				})
-			)
 
-			if (isCollision(projectile, player)) {
-				destroyPlayer()
-			}
-		})
+				if (isCollision(alien, playerArea)) {
+					destroyPlayer()
+				}
+			})
+		)
+
 	}
 
 	return {

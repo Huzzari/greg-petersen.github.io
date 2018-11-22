@@ -24,7 +24,7 @@ define(["./canvas", "./constants"], (_canvas, _constants) => {
 			}
 		})
 
-		if (playerProjectiles < 2) {
+		if (playerProjectiles < 1) {
 			return true
 		}
 		return false

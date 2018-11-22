@@ -8,7 +8,7 @@ define([
 ], (_player, _projectiles, _aliens, _collision, _objective, _sounds) => {
 	const playerInfoElement = $("#playerInfo").get(0)
 	const { projectiles, drawProjectiles } = _projectiles
-	const { player, drawPlayer } = _player
+	const { player, drawPlayer, drawPlayerArea } = _player
 	const { drawAliens, alienFireProjectile, moveAliens, alienInfo } = _aliens
 	const { checkCollisions } = _collision
 	const { checkIfGameOver } = _objective
@@ -20,6 +20,7 @@ define([
 
 	const draw = () => {
 		playMusic()
+		drawPlayerArea()
 		drawPlayer()
 
 		// if (totalElapsedFrames % 2 == 0) {

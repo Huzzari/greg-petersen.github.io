@@ -15,6 +15,19 @@ define(["./canvas", "./constants", "./projectiles", "./sounds", "./models/projec
 		LEFT: false
 	}
 
+	const playerArea = {
+		size: {
+			height: 60,
+			width: CANVAS_WIDTH
+		},
+		position: {
+			x: 0,
+			y: 700
+		},
+		color: "lightgreen",
+		visible: true
+	}
+
 	// TODO: Refactor Player into class
 	const player = {
 		size: {
@@ -26,7 +39,7 @@ define(["./canvas", "./constants", "./projectiles", "./sounds", "./models/projec
 			y: 700
 		},
 		isFiring: false,
-		color: "green",
+		color: "teal",
 		isAlive: true
 	}
 
@@ -36,6 +49,10 @@ define(["./canvas", "./constants", "./projectiles", "./sounds", "./models/projec
 
 	const moveLeft = () => {
 		player.position.x -= 3
+	}
+
+	const drawPlayerArea = () => {
+		drawObject(playerArea)
 	}
 
 	const drawPlayer = () => {
@@ -76,6 +93,8 @@ define(["./canvas", "./constants", "./projectiles", "./sounds", "./models/projec
 	}
 
 	return {
+		playerArea,
+		drawPlayerArea,
 		playerInput,
 		player,
 		drawPlayer,
