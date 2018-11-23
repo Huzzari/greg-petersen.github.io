@@ -4,8 +4,9 @@ define([
 	"./aliens",
 	"./collision",
 	"./objective",
-	"./sounds"
-], (_player, _projectiles, _aliens, _collision, _objective, _sounds) => {
+	"./sounds",
+	"./models/gameObject"
+], (_player, _projectiles, _aliens, _collision, _objective, _sounds, GameObject) => {
 	const playerInfoElement = $("#playerInfo").get(0)
 	const { projectiles, drawProjectiles } = _projectiles
 	const { player, drawPlayer, drawPlayerArea } = _player
@@ -16,22 +17,49 @@ define([
 
 	let gameStarted = false
 	let framesElapsedSinceBeat = 0
-	let totalElapsedFrames = 0
+
+	let fps = 30
+
+	let gameObjects = []
+	gameObjects["testInvader"] = new GameObject("testInvader", 64, 64, 100, 100)
+
+	let imageElements = []
+	imageElements[gameObjects["testInvader"].id] = new Image().src = "./sprites/testInvader.png"
+
+	const gameUpdate = (object) => {
+		// Update incoming object
+	}
+
+	setInterval(() => {
+		for (let i = 0; i < sprites.length - 1; i++) {
+			gameUpdate(sprites[i]);
+		}
+	}, 1000 / fps)
 
 	const draw = () => {
-		playMusic()
-		drawPlayerArea()
-		drawPlayer()
-		drawProjectiles()
-		moveAliens()
-		drawAliens()
-		alienFireProjectile()
-		checkCollisions()
-		displayInfo()
-		if (!checkIfGameOver()) {
-			window.requestAnimationFrame(draw)
+		// playMusic()
+		// drawPlayerArea()
+		// drawPlayer()
+		// drawProjectiles()
+		// moveAliens()
+		// drawAliens()
+		// alienFireProjectile()
+		// checkCollisions()
+		// displayInfo()
+		// if (!checkIfGameOver()) {
+		// }
+		for (let i = 0; i < sprites.length - 1; i++) {
+			animationUpdate(sprites[i])
 		}
-		totalElapsedFrames++
+
+		window.requestAnimationFrame(draw)
+	}
+
+	const animationUpdate = (object) => {
+		if (object.requiresUpdate) {
+			console.log("Object requested update")
+			object.requiresUpdate = false
+		}
 	}
 
 	const playMusic = () => {
