@@ -28,7 +28,7 @@ define(["./canvas", "./projectiles", "./constants", "./sounds", "./models/alien"
 				if (k == 0) {
 					aliens[i] = []
 				}
-				aliens[i].push(new Alien(20 + i * 60, 380 - k * 60, DIRECTION.RIGHT))
+				aliens[i].push(new Alien(`Alien${i}${k}`, 20 + i * 60, 380 - k * 60, DIRECTION.RIGHT, "../sprites/testInvader.png"))
 				alienInfo.alienCount++
 			}
 		}

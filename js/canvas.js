@@ -5,8 +5,9 @@ define(() => {
 	canvasContext.scale(2, 2)
 
 	const drawObject = (object) => {
-		canvasContext.fillStyle = object.color
-		canvasContext.fillRect(object.position.x, object.position.y, object.size.width, object.size.height)
+		// canvasContext.fillStyle = object.color
+		// canvasContext.fillRect(object.position.x, object.position.y, object.size.width, object.size.height)
+		canvasContext.drawImage(object.sprite, object.position.x, object.position.y, object.size.width, object.size.height)
 	}
 
 	const clearObject = (object) => {

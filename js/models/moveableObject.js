@@ -1,8 +1,8 @@
 define(["./gameObject"], (GameObject) => {
 
 	class MoveableObject extends GameObject {
-		constructor(x, y, height, width) {
-			super(x, y, height, width)
+		constructor(id, x, y, height, width, imageSrc) {
+			super(id, x, y, height, width, imageSrc)
 		}
 	}
 
