@@ -1,44 +1,51 @@
-define(["./canvas", "./constants"], (_canvas, _constants) => {
-	const { clearObject, drawObject } = _canvas
-	const projectiles = []
+define(() => {
+  const projectiles = []
+  const projectileInfo = {
+    count: 0
+  }
 
-	const drawProjectiles = () => {
-		projectiles.forEach(projectile => {
-			clearObject(projectile)
-			projectile.move()
+  const projectilesStep = () => {
+    projectiles.forEach((projectile) => {
+      if (!projectile.isVisible()) {
+        destroyProjectile(projectile, projectiles.indexOf(projectile))
+      } else {
+        projectile.move()
+      }
+    })
+  }
 
-			if (!projectile.isVisible()) {
-				let index = projectiles.indexOf(projectile)
-				projectiles.splice(index, 1)
-			} else {
-				drawObject(projectile)
-			}
-		})
-	}
+  // This can be optimized.
+  const playerCanShoot = () => {
+    let playerProjectiles = 0
+    projectiles.forEach((projectile) => {
+      if (projectile.isPlayers) {
+        playerProjectiles++
+      }
+    })
 
-	const playerCanShoot = () => {
-		let playerProjectiles = 0
-		projectiles.forEach(projectile => {
-			if (projectile.isPlayers) {
-				playerProjectiles++
-			}
-		})
+    if (playerProjectiles < 1) {
+      return true
+    }
+    return false
+  }
 
-		if (playerProjectiles < 1) {
-			return true
-		}
-		return false
-	}
+  const destroyProjectile = (projectile, index) => {
+    projectiles.splice(index, 1)
+    projectile.die()
+  }
 
-	this.destroyProjectile = (projectile, index) => {
-		clearObject(projectile)
-		projectiles.splice(index, 1)
-	}
+  const getNextProjectileId = () => {
+    let id = projectileInfo.count
+    projectileInfo.count++
+    return id
+  }
 
-	return {
-		projectiles,
-		destroyProjectile,
-		drawProjectiles,
-		playerCanShoot
-	}
+  return {
+    projectiles,
+    projectilesStep,
+    playerCanShoot,
+    destroyProjectile,
+    projectileInfo,
+    getNextProjectileId
+  }
 })

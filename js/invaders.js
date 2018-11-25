@@ -1,106 +1,111 @@
 define([
-	"./player",
-	"./projectiles",
-	"./aliens",
-	"./collision",
-	"./objective",
-	"./sounds",
-	"./models/gameObject",
-	"./canvas"
-], (_player, _projectiles, _aliens, _collision, _objective, _sounds, GameObject, _canvas) => {
-	const playerInfoElement = $("#playerInfo").get(0)
-	const { projectiles, drawProjectiles } = _projectiles
-	const { player, drawPlayer, drawPlayerArea } = _player
-	const { drawAliens, alienFireProjectile, moveAliens, alienInfo } = _aliens
-	const { checkCollisions } = _collision
-	const { checkIfGameOver } = _objective
-	const { playBeat } = _sounds
-	const { drawObject } = _canvas
+  "./player",
+  "./projectiles",
+  "./aliens",
+  "./collision",
+  "./objective",
+  "./sounds",
+  "./models",
+  "./canvas",
+  "./globals"
+], (_player, _projectiles, _aliens, _collision, _objective, _sounds, _models, _canvas, _globals) => {
+  const playerInfoElement = $("#playerInfo").get(0)
+  const { projectilesStep, projectiles } = _projectiles
+  const { player } = _player
+  const { gameObjects, sprites } = _globals
+  const { generateAliens, alienStep, alienInfo } = _aliens
+  const { checkCollisions } = _collision
+  const { checkIfGameOver } = _objective
+  const { playBeat } = _sounds
+  const { reDraw, clearObject } = _canvas
 
-	let gameStarted = false
-	let framesElapsedSinceBeat = 0
+  let gameStarted = false
+  let framesElapsedSinceBeat = 0
 
-	let fps = 30
+  let fps = 30
 
-	let gameObjects = new Map()
-	let sprites = new Map()
+  const gameLoop = () => {
+    checkCollisions()
+    playMusic()
+    player.update()
+    projectilesStep()
+    alienStep()
+    displayInfo()
+  }
 
-	const gameUpdate = (object) => {
-		// Update incoming object
-	}
+  const drawLoop = () => {
+    gameObjects.forEach((value) => animationUpdate(value))
 
-	setInterval(() => {
-		gameObjects.forEach(gameObject => gameUpdate(gameObject))
-	}, 1000 / fps)
+    if (!checkIfGameOver()) {
+      window.requestAnimationFrame(drawLoop)
+    }
+  }
 
-	// playMusic()
-	// drawPlayerArea()
-	// drawPlayer()
-	// drawProjectiles()
-	// moveAliens()
-	// drawAliens()
-	// alienFireProjectile()
-	// checkCollisions()
-	// displayInfo()
-	// if (!checkIfGameOver()) {
-	// }
+  const animationUpdate = (object) => {
+    if (object.requiresUpdate) {
+      if (object.isDead) {
+        clearObject(object)
+      } else {
+        reDraw(object)
+      }
+    }
+  }
 
-	const draw = () => {
-		gameObjects.forEach(value => animationUpdate(value))
-		window.requestAnimationFrame(draw)
-	}
+  const playMusic = () => {
+    if (framesElapsedSinceBeat >= alienInfo.alienCount * 0.7) {
+      framesElapsedSinceBeat = 0
+      playBeat()
+    }
+    framesElapsedSinceBeat++
+  }
 
-	const animationUpdate = (object) => {
-		if (object.requiresUpdate) {
-			console.log("Object requested update")
-			drawObject(object)
-			object.requiresUpdate = false
-		}
-	}
+  const displayInfo = () => {
+    let output = ""
+    output += "X: " + player.position.x
+    output += "<br> Y: " + player.position.y
+    output += "<br><br>Number of projectiles: " + projectiles.length
+    output += "<br><br>Number of aliens: " + alienInfo.alienCount
+    playerInfoElement.innerHTML = output
+  }
 
-	const playMusic = () => {
-		if (framesElapsedSinceBeat >= alienInfo.alienCount * 1.25) {
-			framesElapsedSinceBeat = 0
-			playBeat()
-		}
-		framesElapsedSinceBeat++
-	}
+  const loadSprite = (id, src) => {
+    var deferred = $.Deferred()
+    var sprite = new Image()
+    sprite.src = src
+    sprite.id = id
 
-	const displayInfo = () => {
-		let output = ""
-		output += "X: " + player.position.x
-		output += "<br> Y: " + player.position.y
-		output += "<br><br>Number of projectiles: " + projectiles.length
-		output += "<br><br>Number of aliens: " + alienInfo.alienCount
-		playerInfoElement.innerHTML = output
-	}
+    sprite.onload = () => {
+      console.log("Sprite loaded", id)
+      sprites.set(id, sprite)
+      deferred.resolve()
+    }
+    return deferred.promise()
+  }
 
-	const loadSprite = (id, src) => {
-		var deferred = $.Deferred()
-		var sprite = new Image()
-		sprite.src = src
-		sprite.id = id
+  const setupGame = () => {
+    var imageLoaders = []
 
-		sprite.onload = () => {
-			console.log("Sprite loaded", id)
-			sprites.set(id, sprite)
-			deferred.resolve()
-		}
-		return deferred.promise()
-	}
+    imageLoaders.push(loadSprite("testInvader", "../sprites/testInvader.png"))
+    imageLoaders.push(loadSprite("playerProjectile", "../sprites/playerProjectile.png"))
+    imageLoaders.push(loadSprite("alienProjectile", "../sprites/alienProjectile.png"))
 
-	$(document).on("click", () => {
-		if (!gameStarted) {
-			gameStarted = true
-			// Try to start game, check if all images loaded
+    $.when.apply(null, imageLoaders).done(() => {
+      setInterval(gameLoop, 1000 / fps)
+      initializeGameObjects()
+      window.requestAnimationFrame(drawLoop)
+    })
+  }
 
-			var imageLoaders = []
-			imageLoaders.push(loadSprite("testInvader", "../sprites/testInvader.png"))
+  const initializeGameObjects = () => {
+    player.sprite = sprites.get("testInvader")
+    generateAliens(sprites.get("testInvader"))
+    gameObjects.set("player", player)
+  }
 
-			$.when.apply(null, imageLoaders).done(() => {
-				gameObjects.set("testInvader", new GameObject("testInvader", 64, 64, 100, 100, sprites.get("testInvader")))
-				window.requestAnimationFrame(draw)
-			})
-		}
-	})
+  $(document).on("click", () => {
+    if (!gameStarted) {
+      gameStarted = true
+      setupGame()
+    }
+  })
 })

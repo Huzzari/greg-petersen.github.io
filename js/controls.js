@@ -1,18 +1,18 @@
-define(["./constants", "./player", "./sounds"], (_constants, _player) => {
+define(["./constants", "./player"], (_constants, _player) => {
   const { KEYBOARD } = _constants
-  const { playerInput, shoot } = _player
+  const { player } = _player
   const doc = $(document)
 
   doc.keydown(e => {
     switch (e.keyCode) {
       case KEYBOARD.LEFT:
-        playerInput.LEFT = true
+        player.input.LEFT = true
         break
       case KEYBOARD.RIGHT:
-        playerInput.RIGHT = true
+        player.input.RIGHT = true
         break
       case KEYBOARD.SPACEBAR:
-        shoot()
+        player.shoot()
         break
     }
   })
@@ -20,10 +20,10 @@ define(["./constants", "./player", "./sounds"], (_constants, _player) => {
   doc.keyup(e => {
     switch (e.keyCode) {
       case KEYBOARD.LEFT:
-        playerInput.LEFT = false
+        player.input.LEFT = false
         break
       case KEYBOARD.RIGHT:
-        playerInput.RIGHT = false
+        player.input.RIGHT = false
         break
     }
   })
