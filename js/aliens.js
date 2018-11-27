@@ -1,138 +1,158 @@
-define(["./canvas", "./projectiles", "./constants", "./sounds", "./models/alien", "./models/projectile"], (
-	_canvas,
-	_projectiles,
-	_constants,
-	_sounds,
-	Alien,
-	Projectile
+define(["./projectiles", "./constants", "./sounds", "./models", "./globals"], (
+  _projectiles,
+  _constants,
+  _sounds,
+  _models,
+  _globals
 ) => {
-	const { clearObject, drawObject, clearLastObjectPosition } = _canvas
-	const { projectiles } = _projectiles
-	const { DIRECTION } = _constants
-	const { alien_death } = _sounds
+  const { projectiles, getNextProjectileId } = _projectiles
+  const { DIRECTION } = _constants
+  const { alien_death } = _sounds
+  const { Alien, AlienProjectile, Sprite } = _models
+  const { gameObjects, images } = _globals
 
-	const aliens = []
+  const aliens = []
 
-	const alienInfo = {
-		alienCount: 0
-	}
+  const alienInfo = {
+    alienCount: 0
+  }
 
-	let shootTimeCounter = 0
-	let moveTimeCounter = 0
+  let shootTimeCounter = 0
+  let moveTimeCounter = 0
 
-	let aliensHaveMoved = false
+  const generateAliens = () => {
+    for (let i = 0; i < 10; i++) {
+      for (let k = 0; k < 5; k++) {
+        if (k == 0) {
+          aliens[i] = []
+        }
+        generateInvader(i, k)
+      }
+    }
+  }
 
-	const generateAliens = () => {
-		for (let i = 0; i < 7; i++) {
-			for (let k = 0; k < 7; k++) {
-				if (k == 0) {
-					aliens[i] = []
-				}
-				aliens[i].push(new Alien(20 + i * 60, 380 - k * 60, DIRECTION.RIGHT))
-				alienInfo.alienCount++
-			}
-		}
-	}
+  const generateInvader = (i, k) => {
+    let sprite, alien
 
-	const drawAliens = () => {
-		if (aliensHaveMoved) {
-			aliens.forEach(alienStack =>
-				alienStack.forEach(alien => {
-					// console.log("Clear Last Object called with: ", alien.lastPosition.x, alien.lastPosition.y, alien.size.width, alien.size.height)
-					clearLastObjectPosition(alien)
-					drawObject(alien)
-				})
-			)
-			aliensHaveMoved = false
-		}
-	}
+    switch (k) {
+      case 0:
+        sprite = new Sprite(images.get("invaderThree"), 2, 32, 192, 128)
+        alien = new Alien(`Alien${i}${k}`, 20 + i * 56, 280 - k * 48, 48, 32, sprite, DIRECTION.RIGHT)
+        break
+      case 1:
+        sprite = new Sprite(images.get("invaderThree"), 2, 32, 192, 128)
+        alien = new Alien(`Alien${i}${k}`, 20 + i * 56, 280 - k * 48, 48, 32, sprite, DIRECTION.RIGHT)
+        break
+      case 2:
+        sprite = new Sprite(images.get("invaderTwo"), 2, 32, 178, 128)
+        alien = new Alien(`Alien${i}${k}`, 21.75 + i * 56, 280 - k * 48, 44.5, 32, sprite, DIRECTION.RIGHT)
+        break
+      case 3:
+        sprite = new Sprite(images.get("invaderTwo"), 2, 32, 178, 128)
+        alien = new Alien(`Alien${i}${k}`, 21.75 + i * 56, 280 - k * 48, 44.5, 32, sprite, DIRECTION.RIGHT)
+        break
+      case 4:
+        sprite = new Sprite(images.get("invaderOne"), 2, 32, 128, 128)
+        alien = new Alien(`Alien${i}${k}`, 27.5 + i * 56, 280 - k * 48, 32, 32, sprite, DIRECTION.RIGHT)
+        break
+    }
 
-	const destroyAlien = (alien, stackIndex, index) => {
-		alienInfo.alienCount--
-		aliens[stackIndex].splice(index, 1)
-		if (aliens[stackIndex].length === 0) {
-			aliens.splice(stackIndex, 1)
-		}
-		alien_death.play()
-		clearObject(alien)
-	}
+    aliens[i].push(alien)
+    gameObjects.set(`Alien${i}${k}`, alien)
+    alienInfo.alienCount++
+  }
 
-	const alienFireProjectile = () => {
-		if (shootTimeCounter >= 100) {
-			shootTimeCounter = 0
-			let alienStack = Math.floor(Math.random() * aliens.length)
-			let bottomAlien = aliens[alienStack][0]
+  const alienStep = () => {
+    moveAliens()
+    alienFireProjectile()
+  }
 
-			projectiles.push(
-				new Projectile(
-					bottomAlien.position.x + bottomAlien.size.width / 2,
-					bottomAlien.position.y + bottomAlien.size.height + 5,
-					DIRECTION.DOWN,
-					false
-				)
-			)
-		} else {
-			shootTimeCounter++
-		}
-	}
+  const destroyAlien = (alien, stackIndex, index) => {
+    alienInfo.alienCount--
+    aliens[stackIndex].splice(index, 1)
+    if (aliens[stackIndex].length === 0) {
+      aliens.splice(stackIndex, 1)
+    }
+    alien.die()
+    alien_death.play()
+  }
 
-	const moveAliens = () => {
-		if (moveTimeCounter >= alienInfo.alienCount * 1) {
-			moveTimeCounter = 0
+  const alienFireProjectile = () => {
+    if (shootTimeCounter >= 50) {
+      shootTimeCounter = 0
+      let alienStack = Math.floor(Math.random() * aliens.length)
+      let bottomAlien = aliens[alienStack][0]
 
-			switch (aliens[0][0].directionMoving) {
-				case DIRECTION.RIGHT:
-					handleDirectionRight()
-					break
-				case DIRECTION.LEFT:
-					handleDirectionLeft()
-					break
-			}
+      let projectile = new AlienProjectile(
+        `Projectile-${getNextProjectileId()}`,
+        bottomAlien.position.x + bottomAlien.size.width / 2,
+        bottomAlien.position.y + bottomAlien.size.height + 5,
+        DIRECTION.DOWN
+      )
 
-			aliensHaveMoved = true
-		} else {
-			moveTimeCounter++
-		}
-	}
+      projectiles.push(projectile)
+      gameObjects.set(projectile.id, projectile)
+    } else {
+      shootTimeCounter++
+    }
+  }
 
-	const handleDirectionLeft = () => {
-		aliens[0][0].canMoveLeft() ? moveAliensLeft() : moveAliensDownThenRight()
-	}
+  const moveAliens = () => {
+    if (moveTimeCounter >= alienInfo.alienCount * 0.7) {
+      moveTimeCounter = 0
 
-	const handleDirectionRight = () => {
-		aliens[aliens.length - 1][0].canMoveRight() ? moveAliensRight() : moveAliensDownThenLeft()
-	}
+      switch (aliens[0][0].directionMoving) {
+        case DIRECTION.RIGHT:
+          handleDirectionRight()
+          break
+        case DIRECTION.LEFT:
+          handleDirectionLeft()
+          break
+      }
+    } else {
+      moveTimeCounter++
+    }
+  }
 
-	const moveAliensRight = () => {
-		aliens.forEach(alienSet => alienSet.forEach(alien => alien.moveRight()))
-	}
+  const handleDirectionLeft = () => {
+    aliens[0][0].canMoveLeft() ? moveAliensLeft() : moveAliensDownThenRight()
+  }
 
-	const moveAliensLeft = () => {
-		aliens.forEach(alienSet => alienSet.forEach(alien => alien.moveLeft()))
-	}
+  const handleDirectionRight = () => {
+    aliens[aliens.length - 1][0].canMoveRight() ? moveAliensRight() : moveAliensDownThenLeft()
+  }
 
-	const moveAliensDownThenRight = () => {
-		aliens.forEach(alienSet => alienSet.forEach(alien => {
-			alien.moveRight()
-			alien.moveDown()
-		}))
-	}
+  const moveAliensRight = () => {
+    aliens.forEach((alienSet) => alienSet.forEach((alien) => alien.moveRight()))
+  }
 
-	const moveAliensDownThenLeft = () => {
-		aliens.forEach(alienSet => alienSet.forEach(alien => {
-			alien.moveLeft()
-			alien.moveDown()
-		}))
-	}
+  const moveAliensLeft = () => {
+    aliens.forEach((alienSet) => alienSet.forEach((alien) => alien.moveLeft()))
+  }
 
-	generateAliens()
+  const moveAliensDownThenRight = () => {
+    aliens.forEach((alienSet) =>
+      alienSet.forEach((alien) => {
+        alien.moveRight()
+        alien.moveDown()
+      })
+    )
+  }
 
-	return {
-		aliens,
-		alienInfo,
-		drawAliens,
-		destroyAlien,
-		alienFireProjectile,
-		moveAliens
-	}
+  const moveAliensDownThenLeft = () => {
+    aliens.forEach((alienSet) =>
+      alienSet.forEach((alien) => {
+        alien.moveLeft()
+        alien.moveDown()
+      })
+    )
+  }
+
+  return {
+    aliens,
+    alienInfo,
+    generateAliens,
+    alienStep,
+    destroyAlien
+  }
 })

@@ -1,10 +1,7 @@
 define(["./gameObject"], (GameObject) => {
-
-	class MoveableObject extends GameObject {
-		constructor(x, y, height, width) {
-			super(x, y, height, width)
-		}
-	}
-
-	return MoveableObject
+  return class MoveableObject extends GameObject {
+    constructor(id, x, y, width, height, sprite) {
+      super(id, x, y, width, height, sprite)
+    }
+  }
 })
