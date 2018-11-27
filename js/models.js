@@ -5,8 +5,9 @@ define([
   "./models/player.js",
   "./models/playerProjectile.js",
   "./models/alienProjectile.js",
-  "./models/projectile.js"
-], (Alien, GameObject, MoveableObject, Player, PlayerProjectile, AlienProjectile, Projectile) => {
+  "./models/projectile.js",
+  "./models/sprite.js"
+], (Alien, GameObject, MoveableObject, Player, PlayerProjectile, AlienProjectile, Projectile, Sprite) => {
   return {
     Alien,
     GameObject,
@@ -14,6 +15,7 @@ define([
     Player,
     PlayerProjectile,
     AlienProjectile,
-    Projectile
+    Projectile,
+    Sprite
   }
 })

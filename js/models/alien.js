@@ -2,8 +2,8 @@ define(["../constants", "./moveableObject"], (_constants, MoveableObject) => {
   const { DIRECTION, CANVAS_WIDTH } = _constants
 
   return class Alien extends MoveableObject {
-    constructor(id, x, y, direction, imageSrc) {
-      super(id, x, y, 50, 50, imageSrc)
+    constructor(id, x, y, width, height, sprite, direction) {
+      super(id, x, y, width, height, sprite)
       this.directionMoving = direction
 
       this.moveRight = () => {

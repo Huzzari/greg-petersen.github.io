@@ -1,7 +1,7 @@
 define(() => {
   const globals = {
     gameObjects: new Map(),
-    sprites: new Map()
+    images: new Map()
   }
 
   return globals

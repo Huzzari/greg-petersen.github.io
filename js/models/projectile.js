@@ -2,8 +2,8 @@ define(["../constants", "./moveableObject"], (_constants, MoveableObject) => {
   const { DIRECTION, CANVAS_HEIGHT } = _constants
 
   return class Projectile extends MoveableObject {
-    constructor(id, x, y, h, w, direction, isPlayers, sprite) {
-      super(id, x, y, h, w, sprite)
+    constructor(id, x, y, w, h, direction, isPlayers, sprite) {
+      super(id, x, y, w, h, sprite)
       this.direction = direction
       // TODO: Refactor to not be a boolean, but be a TypedEnum for owner
       this.isPlayers = isPlayers

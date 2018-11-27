@@ -1,23 +1,22 @@
-define([
-  "./player",
-  "./projectiles",
-  "./aliens",
-  "./collision",
-  "./objective",
-  "./sounds",
-  "./models",
-  "./canvas",
-  "./globals"
-], (_player, _projectiles, _aliens, _collision, _objective, _sounds, _models, _canvas, _globals) => {
+define(["./player", "./projectiles", "./aliens", "./collision", "./objective", "./sounds", "./models", "./globals"], (
+  _player,
+  _projectiles,
+  _aliens,
+  _collision,
+  _objective,
+  _sounds,
+  _models,
+  _globals
+) => {
   const playerInfoElement = $("#playerInfo").get(0)
   const { projectilesStep, projectiles } = _projectiles
   const { player } = _player
-  const { gameObjects, sprites } = _globals
+  const { gameObjects, images } = _globals
   const { generateAliens, alienStep, alienInfo } = _aliens
   const { checkCollisions } = _collision
   const { checkIfGameOver } = _objective
   const { playBeat } = _sounds
-  const { reDraw, clearObject } = _canvas
+  const { Sprite } = _models
 
   let gameStarted = false
   let framesElapsedSinceBeat = 0
@@ -44,9 +43,9 @@ define([
   const animationUpdate = (object) => {
     if (object.requiresUpdate) {
       if (object.isDead) {
-        clearObject(object)
+        object.clear()
       } else {
-        reDraw(object)
+        object.reDraw()
       }
     }
   }
@@ -68,15 +67,15 @@ define([
     playerInfoElement.innerHTML = output
   }
 
-  const loadSprite = (id, src) => {
+  const loadImage = (id, src) => {
     var deferred = $.Deferred()
-    var sprite = new Image()
-    sprite.src = src
-    sprite.id = id
+    var image = new Image()
+    image.src = src
+    image.id = id
 
-    sprite.onload = () => {
+    image.onload = () => {
       console.log("Sprite loaded", id)
-      sprites.set(id, sprite)
+      images.set(id, image)
       deferred.resolve()
     }
     return deferred.promise()
@@ -85,9 +84,13 @@ define([
   const setupGame = () => {
     var imageLoaders = []
 
-    imageLoaders.push(loadSprite("testInvader", "../sprites/testInvader.png"))
-    imageLoaders.push(loadSprite("playerProjectile", "../sprites/playerProjectile.png"))
-    imageLoaders.push(loadSprite("alienProjectile", "../sprites/alienProjectile.png"))
+    imageLoaders.push(loadImage("testInvader", "../sprites/testInvader.png"))
+    imageLoaders.push(loadImage("playerProjectile", "../sprites/playerProjectile.png"))
+    imageLoaders.push(loadImage("alienProjectile", "../sprites/alienProjectile.png"))
+    imageLoaders.push(loadImage("alienSpaceShip", "../sprites/alienSpaceShip.png"))
+    imageLoaders.push(loadImage("invaderOne", "../sprites/invaderOne.png"))
+    imageLoaders.push(loadImage("invaderTwo", "../sprites/invaderTwo.png"))
+    imageLoaders.push(loadImage("invaderThree", "../sprites/invaderThree.png"))
 
     $.when.apply(null, imageLoaders).done(() => {
       setInterval(gameLoop, 1000 / fps)
@@ -97,8 +100,8 @@ define([
   }
 
   const initializeGameObjects = () => {
-    player.sprite = sprites.get("testInvader")
-    generateAliens(sprites.get("testInvader"))
+    player.sprite = new Sprite(images.get("testInvader"), 1, 0, 64, 64)
+    generateAliens()
     gameObjects.set("player", player)
   }
 

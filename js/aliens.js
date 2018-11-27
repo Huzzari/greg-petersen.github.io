@@ -8,8 +8,8 @@ define(["./projectiles", "./constants", "./sounds", "./models", "./globals"], (
   const { projectiles, getNextProjectileId } = _projectiles
   const { DIRECTION } = _constants
   const { alien_death } = _sounds
-  const { Alien, AlienProjectile } = _models
-  const { gameObjects } = _globals
+  const { Alien, AlienProjectile, Sprite } = _models
+  const { gameObjects, images } = _globals
 
   const aliens = []
 
@@ -20,18 +20,46 @@ define(["./projectiles", "./constants", "./sounds", "./models", "./globals"], (
   let shootTimeCounter = 0
   let moveTimeCounter = 0
 
-  const generateAliens = (sprite) => {
-    for (let i = 0; i < 7; i++) {
-      for (let k = 0; k < 7; k++) {
+  const generateAliens = () => {
+    for (let i = 0; i < 10; i++) {
+      for (let k = 0; k < 5; k++) {
         if (k == 0) {
           aliens[i] = []
         }
-        let alien = new Alien(`Alien${i}${k}`, 20 + i * 60, 380 - k * 60, DIRECTION.RIGHT, sprite)
-        aliens[i].push(alien)
-        gameObjects.set(`Alien${i}${k}`, alien)
-        alienInfo.alienCount++
+        generateInvader(i, k)
       }
     }
+  }
+
+  const generateInvader = (i, k) => {
+    let sprite, alien
+
+    switch (k) {
+      case 0:
+        sprite = new Sprite(images.get("invaderThree"), 2, 32, 192, 128)
+        alien = new Alien(`Alien${i}${k}`, 20 + i * 56, 280 - k * 48, 48, 32, sprite, DIRECTION.RIGHT)
+        break
+      case 1:
+        sprite = new Sprite(images.get("invaderThree"), 2, 32, 192, 128)
+        alien = new Alien(`Alien${i}${k}`, 20 + i * 56, 280 - k * 48, 48, 32, sprite, DIRECTION.RIGHT)
+        break
+      case 2:
+        sprite = new Sprite(images.get("invaderTwo"), 2, 32, 178, 128)
+        alien = new Alien(`Alien${i}${k}`, 21.75 + i * 56, 280 - k * 48, 44.5, 32, sprite, DIRECTION.RIGHT)
+        break
+      case 3:
+        sprite = new Sprite(images.get("invaderTwo"), 2, 32, 178, 128)
+        alien = new Alien(`Alien${i}${k}`, 21.75 + i * 56, 280 - k * 48, 44.5, 32, sprite, DIRECTION.RIGHT)
+        break
+      case 4:
+        sprite = new Sprite(images.get("invaderOne"), 2, 32, 128, 128)
+        alien = new Alien(`Alien${i}${k}`, 27.5 + i * 56, 280 - k * 48, 32, 32, sprite, DIRECTION.RIGHT)
+        break
+    }
+
+    aliens[i].push(alien)
+    gameObjects.set(`Alien${i}${k}`, alien)
+    alienInfo.alienCount++
   }
 
   const alienStep = () => {

@@ -1,6 +1,6 @@
 define(() => {
   // Change this to mute sounds for development
-  let muted = true
+  let muted = false
   let soundIndex = 0
 
   class Sound {
@@ -10,7 +10,7 @@ define(() => {
       this.sound.setAttribute("preload", "auto")
       this.sound.setAttribute("controls", "none")
       this.sound.style.display = "none"
-      this.sound.volume = 1
+      this.sound.volume = 0.5
       document.body.appendChild(this.sound)
       this.play = function() {
         if (!muted) {

@@ -1,5 +1,4 @@
-define(["./canvas", "./constants", "./models"], (_canvas, _constants, _models) => {
-  // const { drawObject, clearObject } = _canvas
+define(["./constants", "./models"], (_constants, _models) => {
   const { CANVAS_WIDTH } = _constants
   const { Player } = _models
 
