@@ -18,18 +18,23 @@ define(["./player", "./projectiles", "./aliens", "./collision", "./objective", "
   const { playBeat } = _sounds
   const { Sprite } = _models
 
+  let gameInterval
   let gameStarted = false
   let framesElapsedSinceBeat = 0
 
   let fps = 30
 
   const gameLoop = () => {
-    checkCollisions()
-    playMusic()
-    player.update()
-    projectilesStep()
-    alienStep()
-    displayInfo()
+    if (!checkIfGameOver()) {
+      checkCollisions()
+      playMusic()
+      player.update()
+      projectilesStep()
+      alienStep()
+      displayInfo()
+    } else {
+      clearInterval(gameInterval)
+    }
   }
 
   const drawLoop = () => {
@@ -85,22 +90,24 @@ define(["./player", "./projectiles", "./aliens", "./collision", "./objective", "
     var imageLoaders = []
 
     imageLoaders.push(loadImage("testInvader", "../sprites/testInvader.png"))
+    imageLoaders.push(loadImage("player", "../sprites/player.png"))
     imageLoaders.push(loadImage("playerProjectile", "../sprites/playerProjectile.png"))
     imageLoaders.push(loadImage("alienProjectile", "../sprites/alienProjectile.png"))
     imageLoaders.push(loadImage("alienSpaceShip", "../sprites/alienSpaceShip.png"))
     imageLoaders.push(loadImage("invaderOne", "../sprites/invaderOne.png"))
     imageLoaders.push(loadImage("invaderTwo", "../sprites/invaderTwo.png"))
     imageLoaders.push(loadImage("invaderThree", "../sprites/invaderThree.png"))
+    imageLoaders.push(loadImage("playerDeath", "../sprites/playerDeath.png"))
 
     $.when.apply(null, imageLoaders).done(() => {
-      setInterval(gameLoop, 1000 / fps)
+      gameInterval = setInterval(gameLoop, 1000 / fps)
       initializeGameObjects()
       window.requestAnimationFrame(drawLoop)
     })
   }
 
   const initializeGameObjects = () => {
-    player.sprite = new Sprite(images.get("testInvader"), 1, 0, 64, 64)
+    player.sprite = new Sprite(images.get("player"), 1, 0, 208, 128)
     generateAliens()
     gameObjects.set("player", player)
   }

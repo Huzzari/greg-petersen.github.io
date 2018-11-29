@@ -19,6 +19,7 @@ define(["./player", "./aliens", "./projectiles"], (_player, _aliens, _projectile
         projectiles.forEach((projectile, projectileIndex) => {
           if (isCollision(projectile, player)) {
             player.die()
+            destroyProjectile(projectile, projectileIndex)
           }
 
           if (isCollision(projectile, alien) && projectile.isPlayers) {
