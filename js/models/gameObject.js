@@ -9,6 +9,7 @@ define(["../canvas"], (_canvas) => {
       this.sprite = sprite
       this.requiresUpdate = true
       this.isDead = false
+      this.isDying = false
 
       this.lastPosition = { x: this.position.x, y: this.position.y }
 

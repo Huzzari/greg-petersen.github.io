@@ -1,14 +1,15 @@
 body {
-    display: flex;
+  display: flex;
 }
 
 #canvas {
-    background-color: lightgrey;
-		position: relative;
-		height: 750px;
-		width: 600px;
+  background-color: black;
+  position: relative;
+  height: 750px;
+  width: 600px;
 }
 
-span, h3 {
-    display: inline-block;
+span,
+h3 {
+  display: inline-block;
 }

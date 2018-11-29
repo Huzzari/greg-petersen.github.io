@@ -2,7 +2,7 @@ define(["./constants", "./models"], (_constants, _models) => {
   const { CANVAS_WIDTH } = _constants
   const { Player } = _models
 
-  const player = new Player("player", 300, 700, 30, 30, null)
+  const player = new Player("player", 300, 650, 52, 32, null)
 
   const playerArea = {
     size: {

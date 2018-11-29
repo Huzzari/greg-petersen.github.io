@@ -1,20 +1,22 @@
-define(["../constants", "../projectiles", "./playerProjectile", "../sounds", "./moveableObject", "../globals"], (
-  _constants,
-  _projectiles,
-  PlayerProjectile,
-  _sounds,
-  MoveableObject,
-  _globals
-) => {
+define([
+  "../constants",
+  "../projectiles",
+  "./playerProjectile",
+  "../sounds",
+  "./moveableObject",
+  "../globals",
+  "./Sprite"
+], (_constants, _projectiles, PlayerProjectile, _sounds, MoveableObject, _globals, Sprite) => {
   const { DIRECTION, CANVAS_WIDTH, PLAYER_PROJECTILE_WIDTH, PLAYER_PROJECTILE_HEIGHT } = _constants
   const { projectiles, playerCanShoot, getNextProjectileId } = _projectiles
   const { shoot: shoot_sound } = _sounds
-  const { gameObjects } = _globals
+  const { gameObjects, images } = _globals
 
   return class Player extends MoveableObject {
     constructor(id, x, y, h, w, sprite) {
       super(id, x, y, h, w, sprite)
       this.isFiring = false
+      this.deathCount = 0
 
       this.input = {
         RIGHT: false,
@@ -56,11 +58,27 @@ define(["../constants", "../projectiles", "./playerProjectile", "../sounds", "./
       }
 
       this.update = () => {
-        if (this.input.RIGHT && this.canMoveRight()) {
+        if (this.isDying && !this.isDead) {
+          if (this.deathCount >= (this.sprite.frames - 1) * 3) {
+            this.isDead = true
+            this.isDying = false
+          } else if (this.deathCount % 3 == 0) {
+            this.requiresUpdate = true
+          }
+          this.deathCount++
+        } else if (this.input.RIGHT && this.canMoveRight()) {
           this.moveRight()
         } else if (this.input.LEFT && this.canMoveLeft()) {
           this.moveLeft()
         }
+      }
+
+      this.die = () => {
+        this.requiresUpdate = true
+        this.isDying = true
+        this.clear()
+        this.size = { width: 60, height: 32 }
+        this.sprite = new Sprite(images.get("playerDeath"), 4, 32, 240, 128)
       }
     }
   }
