@@ -5,7 +5,7 @@ define([
   "../sounds",
   "./moveableObject",
   "../globals",
-  "./Sprite"
+  "./sprite"
 ], (_constants, _projectiles, PlayerProjectile, _sounds, MoveableObject, _globals, Sprite) => {
   const { DIRECTION, CANVAS_WIDTH, PLAYER_PROJECTILE_WIDTH, PLAYER_PROJECTILE_HEIGHT } = _constants
   const { projectiles, playerCanShoot, getNextProjectileId } = _projectiles
