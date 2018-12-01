@@ -98,6 +98,7 @@ define(["./player", "./projectiles", "./aliens", "./collision", "./objective", "
     imageLoaders.push(loadImage("invaderTwo", "../sprites/invaderTwo.png"))
     imageLoaders.push(loadImage("invaderThree", "../sprites/invaderThree.png"))
     imageLoaders.push(loadImage("playerDeath", "../sprites/playerDeath.png"))
+    imageLoaders.push(loadImage("alienDeath", "../sprites/alienDeath.png"))
 
     $.when.apply(null, imageLoaders).done(() => {
       gameInterval = setInterval(gameLoop, 1000 / fps)
